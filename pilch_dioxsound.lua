@@ -326,17 +326,12 @@ local function checkGreedy()
     local greedyCount = 0
     for _, obj in pairs(upgradesFolder:GetChildren()) do
         if obj.Name == "Greedy" then
-            local isOwned = (obj:IsA("BoolValue") and obj.Value) or
-                            (obj:IsA("IntValue") and obj.Value == 1) or
-                            (obj:IsA("StringValue") and (obj.Value == "true" or obj.Value == "owned"))
-            if isOwned then
-                greedyCount = greedyCount + 1
-            end
-            print("Found Greedy object:", obj.Name, "Type:", obj.ClassName, "Value:", obj.Value, "Is Owned:", isOwned)
+            greedyCount = greedyCount + 1 -- Считаем, что Greedy "куплен", если он просто существует
+            print("Found Greedy object:", obj.Name, "Type:", obj.ClassName, "Value:", obj.Value)
         end
     end
     print("Total Greedy count:", greedyCount)
-    return greedyCount -- Возвращаем количество купленных "Greedy"
+    return greedyCount -- Возвращаем количество объектов "Greedy"
 end
 
 local function buyGreedy()
@@ -355,7 +350,7 @@ local function buyGreedy()
         local successArgs, args = pcall(function()
             local upgradeGreedy = playerGui:WaitForChild("LobbyGUI"):WaitForChild("WorkSHOP"):WaitForChild("Upgrades"):WaitForChild("Greedy")
             print("Attempting to buy Greedy with args:", upgradeGreedy, 30, "Greedy")
-            return {upgradeGreedy, 30, "Greedy"}
+            return {upgradeGreedy, 30, "Greedy"} -- Оставим эти аргументы, но добавим больше отладки
         end)
         if successArgs then
             print("Firing BuyItem RemoteEvent with args:", unpack(args))
@@ -370,13 +365,17 @@ local function buyGreedy()
                     Image = "shopping-cart"
                 })
             else
-                warn("Greedy purchase failed - not detected after purchase attempt!")
+                warn("Greedy purchase failed - no Greedy detected after purchase attempt!")
+                -- Добавим дополнительную отладку: проверим, что изменилось в Upgrades
+                for _, obj in pairs(upgradesFolder:GetChildren()) do
+                    print("Post-purchase Upgrades content:", obj.Name, "Type:", obj.ClassName, "Value:", obj.Value)
+                end
             end
         else
             warn("Failed to create arguments for buying Greedy:", args)
         end
     else
-        print("Greedy already owned, no purchase needed.")
+        print("Greedy already exists, no purchase needed.")
         Rayfield:Notify({
             Title = "Авто-покупка",
             Content = "Greedy уже куплен!",
@@ -433,42 +432,42 @@ EnvironmentTab:CreateButton({
 
 -- Вкладка "Автофарм"
 AutofarmTab:CreateToggle({
-	Name = "Авто-покупка Greedy",
-	CurrentValue = false,
-	Callback = function(value)
-			autoGreedyEnabled = value
-			if value then
-					upgradesFolder = localPlayer:FindFirstChild("Upgrades") -- Обновляем перед проверкой
-					local initialGreedyCount = checkGreedy()
-					if initialGreedyCount > 0 then
-							autoGreedyEnabled = false
-							Rayfield:Notify({
-									Title = "Авто-покупка",
-									Content = "Greedy уже куплен! Авто-покупка не запущена.",
-									Duration = 3,
-									Image = "x-circle"
-							})
-							return
-					end
-					if not autoGreedyThread or coroutine.status(autoGreedyThread) == "dead" then
-							autoGreedyThread = coroutine.create(autoBuyGreedy)
-							coroutine.resume(autoGreedyThread)
-					end
-					Rayfield:Notify({
-							Title = "Авто-покупка",
-							Content = "Автоматическая покупка Greedy включена",
-							Duration = 3,
-							Image = "shopping-cart"
-					})
-			else
-					Rayfield:Notify({
-							Title = "Авто-покупка",
-							Content = "Автоматическая покупка Greedy выключена",
-							Duration = 3,
-							Image = "x-circle"
-					})
-			end
-	end
+    Name = "Авто-покупка Greedy",
+    CurrentValue = false,
+    Callback = function(value)
+        autoGreedyEnabled = value
+        if value then
+            upgradesFolder = localPlayer:FindFirstChild("Upgrades") -- Обновляем перед проверкой
+            local initialGreedyCount = checkGreedy()
+            if initialGreedyCount > 0 then
+                autoGreedyEnabled = false
+                Rayfield:Notify({
+                    Title = "Авто-покупка",
+                    Content = "Greedy уже куплен! Авто-покупка не запущена.",
+                    Duration = 3,
+                    Image = "x-circle"
+                })
+                return
+            end
+            if not autoGreedyThread or coroutine.status(autoGreedyThread) == "dead" then
+                autoGreedyThread = coroutine.create(autoBuyGreedy)
+                coroutine.resume(autoGreedyThread)
+            end
+            Rayfield:Notify({
+                Title = "Авто-покупка",
+                Content = "Автоматическая покупка Greedy включена",
+                Duration = 3,
+                Image = "shopping-cart"
+            })
+        else
+            Rayfield:Notify({
+                Title = "Авто-покупка",
+                Content = "Автоматическая покупка Greedy выключена",
+                Duration = 3,
+                Image = "x-circle"
+            })
+        end
+    end
 })
 
 AutofarmTab:CreateButton({
