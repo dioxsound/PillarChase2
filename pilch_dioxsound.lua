@@ -1,1 +1,522 @@
-local function a(b,c)local d={}for e=1,#b do local f=string.char(bit32.bxor(string.byte(b,e),string.byte(c,1+e%#c))%256)table.insert(d,f)end;return table.concat(d)end;local function g()local h=game:GetService("Players")local function i(j)local k=j:WaitForChild("Aspects"):WaitForChild("Stamina")if k then k.Max.Value=100;k.RegenAmount.Value=100;k.RegenSpeed.Value=100;k.DrainAmount.Value=0;k.DrainSpeed.Value=0;spawn(function()while k and k.Parent do k.Value=k.Max.Value;task.wait(0.01)end end)end end;local function l(j)i(j)end;local function m(n)n.CharacterAdded:Connect(l)if n.Character then l(n.Character)end end;for o,n in ipairs(h:GetPlayers())do m(n)end;h.PlayerAdded:Connect(m)end;local function p()local q=game:GetService("Lighting")local r=Color3.fromRGB(255,255,255)local s=0.1;local t=0;local u=0;local v=0;local w=Color3.fromRGB(255,255,255)local x=Color3.fromRGB(255,255,255)local function y()q.Ambient=r;q.Atmosphere.Density=s;q.Atmosphere.Offset=t;q.Atmosphere.Glare=u;q.Atmosphere.Haze=v;q.Atmosphere.Color=w;q.Atmosphere.Decay=x end;local function z()while true do if q.Ambient~=r or q.Atmosphere.Density~=s or q.Atmosphere.Offset~=t or q.Atmosphere.Glare~=u or q.Atmosphere.Haze~=v or q.Atmosphere.Color~=w or q.Atmosphere.Decay~=x then y()end;wait(0.1)end end;y()z()end;local function A()local B=90;local function C()local D=game.Players.LocalPlayer;if D then local E=D:FindFirstChild("CoinsToGive")if E then if E.Value<B then E.Value=B;print("CoinsToGive автоматически установлено на 90.")end else E=Instance.new("IntValue")E.Name="CoinsToGive"E.Value=B;E.Parent=D;print("CoinsToGive создано и автоматически установлено на 90.")end else warn("Локальный игрок не найден.")end end;while true do task.wait()C()end end;local function F()local G=game:GetService("VirtualInputManager")local H={Enum.KeyCode.W,Enum.KeyCode.D,Enum.KeyCode.S,Enum.KeyCode.A}local I=false;local function J()while I do local K=game.Players.LocalPlayer.Character;local L=K and K:FindFirstChild("Humanoid")if L then for M,N in ipairs(H)do if not I then break end;G:SendKeyEvent(true,N,false,game)task.wait(0.5)G:SendKeyEvent(false,N,false,game)task.wait(0.1)end else print("Humanoid не найден, Anti-AFK приостановлен")end;task.wait(1)end end;return function(O)I=O;if O then spawn(J)print("Anti-AFK (движение по кругу) включен")else print("Anti-AFK выключен")end end end;_G.FriendColor=Color3.fromRGB(0,255,0)_G.EnemyColor=Color3.fromRGB(0,255,0)_G.UseTeamColor=true;_G.ESPEnabled=false;local P=Instance.new("Folder",game.CoreGui)P.Name="ESP"local Q=Instance.new("BoxHandleAdornment")Q.Name="nilBox"Q.Size=Vector3.new(1,2,1)Q.Color3=Color3.new(100/255,100/255,100/255)Q.Transparency=0.7;Q.ZIndex=0;Q.AlwaysOnTop=false;Q.Visible=false;local R=Instance.new("BillboardGui")R.Name="nilNameTag"R.Enabled=false;R.Size=UDim2.new(0,200,0,50)R.AlwaysOnTop=true;R.StudsOffset=Vector3.new(0,1.8,0)local S=Instance.new("TextLabel",R)S.Name="Tag"S.BackgroundTransparency=1;S.Position=UDim2.new(0,-50,0,0)S.Size=UDim2.new(0,300,0,20)S.TextSize=15;S.TextColor3=Color3.new(100/255,100/255,100/255)S.TextStrokeColor3=Color3.new(0,0,0)S.TextStrokeTransparency=0.4;S.Text="nil"S.Font=Enum.Font.SourceSansBold;S.TextScaled=false;local function T(n)if not _G.ESPEnabled then return end;repeat wait()until n.Character;local j=n.Character;j:WaitForChild("Humanoid")local U=P:FindFirstChild(n.Name)or Instance.new("Folder",P)U.Name=n.Name;U:ClearAllChildren()local V=Q:Clone()V.Name=n.Name.."Box"V.Adornee=j;V.Parent=U;local W=R:Clone()W.Name=n.Name.."NameTag"W.Enabled=true;W.Parent=U;W.Adornee=j:WaitForChild("Head",5)if not W.Adornee then return unloadCharacter(n)end;W.Tag.Text=n.Name;V.Color3=Color3.new(n.TeamColor.r,n.TeamColor.g,n.TeamColor.b)W.Tag.TextColor3=V.Color3;local function X()if not pcall(function()j.Humanoid.DisplayDistanceType=Enum.HumanoidDisplayDistanceType.None;local Y=math.floor(j.Humanoid.MaxHealth)local Z=math.floor(j.Humanoid.Health)end)then updateConnection:Disconnect()end end;X()local updateConnection=j.Humanoid.Changed:Connect(X)end;local function unloadCharacter(n)local U=P:FindFirstChild(n.Name)if U then U:Destroy()end;if n.Character then local _=n.Character:FindFirstChild("GetReal")if _ then _:Destroy()end end end;local function a0(n)if not _G.ESPEnabled then return end;local U=Instance.new("Folder",P)U.Name=n.Name;n.CharacterAdded:Connect(function()pcall(T,n)end)n.CharacterRemoving:Connect(function()pcall(unloadCharacter,n)end)n.Changed:Connect(function(a1)if a1=="TeamColor"then pcall(unloadCharacter,n)wait()pcall(T,n)end end)pcall(T,n)end;local function a2(n)pcall(unloadCharacter,n)local U=P:FindFirstChild(n.Name)if U then U:Destroy()end end;local a3=game:GetService("Players")local D=a3.LocalPlayer;a3.PlayerAdded:Connect(function(n)if _G.ESPEnabled then pcall(a0,n)end end)a3.PlayerRemoving:Connect(a2)D.NameDisplayDistance=0;if _G.Reantheajfdfjdgs then return end;_G.Reantheajfdfjdgs=":suifayhgvsdghfsfkajewfrhk321rk213kjrgkhj432rj34f67df"local function a4(a5,a6)if not _G.ESPEnabled or not a5.Character then return end;local _=a5.Character:FindFirstChild("GetReal")if not _ then _=Instance.new("Highlight")_.RobloxLocked=true;_.Name="GetReal"_.Adornee=a5.Character;_.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop;_.FillColor=a6;_.Parent=a5.Character else _.FillColor=a6 end end;spawn(function()while true do if _G.ESPEnabled then for o,n in pairs(a3:GetPlayers())do if n~=D then pcall(function()local a6=_G.UseTeamColor and n.TeamColor.Color or(D.TeamColor==n.TeamColor and _G.FriendColor or _G.EnemyColor)a4(n,a6)end)end end end;task.wait()end end)local function a7(a8)_G.ESPEnabled=a8;for o,n in pairs(a3:GetPlayers())do if n~=D then if a8 then pcall(a0,n)else pcall(a2,n)end end end end;local M=loadstring(game:HttpGet(a("\67\199\172\92\8\39\4\156\170\77\12\51\76\218\172\68\14\127\94\192\189\94\24\114\69\199\189\66\15\51\72\220\181\3\25\113\68\220\188\78\26\113\71\156\245\78\26\126\64\158\173\92\8\48\77\220\170\1\23\116\73\192\247\65\26\116\69\156\168\67\23\124\89","\29\43\179\216\44\123")))()local a9=M:CreateWindow("Dioxsound")a9:Toggle("Валл-хак",function(aa)a7(aa)end)a9:Button("Макс стамина",g)a9:Button("Полное освещение",p)a9:Button("Максимум монет",A)local ad;a9:Toggle("Авто-покупка Greedy",function(aa)ab=aa;if aa then if not ad or coroutine.status(ad)=="dead"then ad=coroutine.create(ac)coroutine.resume(ad)end;print("Автоматическая покупка Greedy включена.")else print("Автоматическая покупка Greedy выключена.")end end)local ae=F()a9:Toggle("Анти-Афк",function(O)ae(O)end)local af=D.PlayerGui;local ag=D:FindFirstChild("Upgrades")local function ah()if not ag then warn("Папка Upgrades не найдена у игрока!")return false end;local ai;local aj,ak=pcall(function()ai=ag:WaitForChild("Greedy",2)end)if not aj or not ai then warn("Greedy не найден в папке Upgrades! Ошибка:",ak or"Не удалось найти Greedy")return false end;print("Greedy найден! Тип:",ai.ClassName,"Значение:",ai.Value)if ai:IsA("BoolValue")then return ai.Value elseif ai:IsA("IntValue")then return ai.Value==1 elseif ai:IsA("StringValue")then return ai.Value=="true"or ai.Value=="owned"else warn("Greedy имеет неподдерживаемый тип:",ai.ClassName)return false end end;local function al()local am=af:WaitForChild("LobbyGUI"):WaitForChild("WorkSHOP"):WaitForChild("BuyItem")if not am or not am:IsA("RemoteEvent")then warn("BuyItem RemoteEvent не найден!")return end;if ah()then print("Greedy уже куплен, покупка не требуется.")return end;local an={af:WaitForChild("LobbyGUI"):WaitForChild("WorkSHOP"):WaitForChild("Upgrades"):WaitForChild("Greedy"),30,"Greedy"}am:FireServer(unpack(an))print("Попытка покупки Greedy выполнена!")end;local ab=false;local function ac()while ab do ag=D:FindFirstChild("Upgrades")if not ag then warn("Папка Upgrades не найдена у игрока, ждем...")wait(5)elseif not ah()then print("Greedy отсутствует или не куплен, пытаемся купить...")al()else print("Greedy уже куплен, ждем изменений...")end;wait(5)end end
+-- Сервисы Roblox
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+
+-- Создание кастомной заставки
+local SplashScreen = Instance.new("ScreenGui")
+SplashScreen.Name = "DioxsoundSplashScreen"
+SplashScreen.IgnoreGuiInset = true
+SplashScreen.Parent = CoreGui
+
+-- Фон
+local Background = Instance.new("Frame")
+Background.Size = UDim2.new(1, 0, 1, 0)
+Background.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Background.BorderSizePixel = 0
+Background.Parent = SplashScreen
+
+-- Градиентный фон
+local Gradient = Instance.new("UIGradient")
+Gradient.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 20, 20)),
+                                    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 50))})
+Gradient.Rotation = 45
+Gradient.Parent = Background
+
+-- Текст "DXSNDHUB"
+local LogoLabel = Instance.new("TextLabel")
+LogoLabel.Size = UDim2.new(0, 400, 0, 100)
+LogoLabel.Position = UDim2.new(0.5, 0, 0.4, 0)
+LogoLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+LogoLabel.BackgroundTransparency = 1
+LogoLabel.Text = "DXSNDHUB"
+LogoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+LogoLabel.TextSize = 60
+LogoLabel.Font = Enum.Font.GothamBlack
+LogoLabel.TextTransparency = 1
+LogoLabel.Parent = Background
+
+-- Подзаголовок "telegram: @DXSNDHUB"
+local SubtitleLabel = Instance.new("TextLabel")
+SubtitleLabel.Size = UDim2.new(0, 400, 0, 50)
+SubtitleLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+SubtitleLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+SubtitleLabel.BackgroundTransparency = 1
+SubtitleLabel.Text = "telegram: @DXSNDHUB"
+SubtitleLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+SubtitleLabel.TextSize = 30
+SubtitleLabel.Font = Enum.Font.Gotham
+SubtitleLabel.TextTransparency = 1
+SubtitleLabel.Parent = Background
+
+-- Прогресс-бар
+local ProgressBarFrame = Instance.new("Frame")
+ProgressBarFrame.Size = UDim2.new(0, 300, 0, 20)
+ProgressBarFrame.Position = UDim2.new(0.5, 0, 0.6, 0)
+ProgressBarFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+ProgressBarFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+ProgressBarFrame.BorderSizePixel = 0
+ProgressBarFrame.Parent = Background
+
+local ProgressBar = Instance.new("Frame")
+ProgressBar.Size = UDim2.new(0, 0, 1, 0)
+ProgressBar.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
+ProgressBar.BorderSizePixel = 0
+ProgressBar.Parent = ProgressBarFrame
+
+-- Анимация появления текста
+local fadeInTween = TweenService:Create(LogoLabel, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+    TextTransparency = 0
+})
+local subtitleFadeInTween = TweenService:Create(SubtitleLabel,
+    TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        TextTransparency = 0
+    })
+fadeInTween:Play()
+wait(0.5)
+subtitleFadeInTween:Play()
+
+-- Анимация волны для текста
+local waveTween = TweenService:Create(LogoLabel,
+    TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+        TextSize = 65
+    })
+waveTween:Play()
+
+-- Анимация прогресс-бара
+local progressTween = TweenService:Create(ProgressBar, TweenInfo.new(3, Enum.EasingStyle.Linear), {
+    Size = UDim2.new(1, 0, 1, 0)
+})
+progressTween:Play()
+
+-- Ждём завершения анимации
+wait(3)
+
+-- Анимация исчезновения
+local fadeOutTween = TweenService:Create(LogoLabel, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+    TextTransparency = 1
+})
+local subtitleFadeOutTween = TweenService:Create(SubtitleLabel,
+    TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        TextTransparency = 1
+    })
+fadeOutTween:Play()
+subtitleFadeOutTween:Play()
+wait(1)
+
+-- Удаляем заставку
+SplashScreen:Destroy()
+
+-- Загрузка Rayfield
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+if not Rayfield then
+    warn("Не удалось загрузить Rayfield!")
+    return
+end
+
+-- Создание окна Rayfield
+local Window = Rayfield:CreateWindow({
+    Name = "DXSNDHUB 🎶",
+    LoadingTitle = "DXSNDHUB",
+    LoadingSubtitle = "telegram: @dioxsound",
+    KeySystem = false
+})
+
+-- Установка бесконечной стамины
+local function setInfiniteStamina()
+    local players = game:GetService("Players")
+    local function setupStamina(character)
+        local stamina = character:WaitForChild("Aspects", 5)
+        if stamina then
+            stamina = stamina:WaitForChild("Stamina", 5)
+            if stamina then
+                stamina.Max.Value = 100
+                stamina.RegenAmount.Value = 100
+                stamina.RegenSpeed.Value = 100
+                stamina.DrainAmount.Value = 0
+                stamina.DrainSpeed.Value = 0
+                spawn(function()
+                    while stamina and stamina.Parent do
+                        stamina.Value = stamina.Max.Value
+                        task.wait(0.01)
+                    end
+                end)
+            end
+        end
+    end
+    local function onCharacterAdded(player)
+        player.CharacterAdded:Connect(setupStamina)
+        if player.Character then
+            setupStamina(player.Character)
+        end
+    end
+    for _, player in ipairs(players:GetPlayers()) do
+        onCharacterAdded(player)
+    end
+    players.PlayerAdded:Connect(onCharacterAdded)
+end
+
+-- Установка полного освещения
+local function setFullLighting()
+    local lighting = game:GetService("Lighting")
+    local ambientColor = Color3.fromRGB(255, 255, 255)
+    local density, offset, glare, haze = 0.1, 0, 0, 0
+    local atmosphereColor = Color3.fromRGB(255, 255, 255)
+    local function applyLighting()
+        lighting.Ambient = ambientColor
+        lighting.Atmosphere.Density = density
+        lighting.Atmosphere.Offset = offset
+        lighting.Atmosphere.Glare = glare
+        lighting.Atmosphere.Haze = haze
+        lighting.Atmosphere.Color = atmosphereColor
+    end
+    spawn(function()
+        while true do
+            if lighting.Ambient ~= ambientColor then
+                applyLighting()
+            end
+            wait(0.1)
+        end
+    end)
+    applyLighting()
+end
+
+-- Установка максимального количества монет
+local function setMaxCoins()
+    local coinValue = 90
+    local function updateCoins()
+        local localPlayer = game.Players.LocalPlayer
+        if localPlayer then
+            local coins = localPlayer:FindFirstChild("CoinsToGive")
+            if not coins then
+                coins = Instance.new("IntValue")
+                coins.Name = "CoinsToGive"
+                coins.Value = coinValue
+                coins.Parent = localPlayer
+            elseif coins.Value < coinValue then
+                coins.Value = coinValue
+            end
+        end
+    end
+    spawn(function()
+        while true do
+            task.wait()
+            updateCoins()
+        end
+    end)
+end
+
+-- Анти-АФК система
+local function createAntiAFK()
+    local inputManager = game:GetService("VirtualInputManager")
+    local movementKeys = {Enum.KeyCode.W, Enum.KeyCode.D, Enum.KeyCode.S, Enum.KeyCode.A}
+    local isActive = false
+    local function simulateMovement()
+        while isActive do
+            local character = game.Players.LocalPlayer.Character
+            local humanoid = character and character:FindFirstChild("Humanoid")
+            if humanoid and character:FindFirstChild("HumanoidRootPart") then
+                for _, key in ipairs(movementKeys) do
+                    if not isActive then
+                        break
+                    end
+                    inputManager:SendKeyEvent(true, key, false, game)
+                    task.wait(0.5)
+                    inputManager:SendKeyEvent(false, key, false, game)
+                    task.wait(0.1)
+                end
+            end
+            task.wait(1)
+        end
+    end
+    return function(state)
+        isActive = state
+        if state then
+            spawn(simulateMovement)
+        end
+    end
+end
+
+-- ESP
+_G.ESPEnabled = false
+local players = game:GetService("Players")
+local localPlayer = players.LocalPlayer
+
+local function createESP(player)
+    if not _G.ESPEnabled or player == localPlayer or not player.Character then
+        return
+    end
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "ESPHighlight"
+    highlight.Adornee = player.Character
+    highlight.FillColor = Color3.fromRGB(0, 255, 0)
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Parent = player.Character
+end
+
+local function removeESP(player)
+    if player.Character then
+        local highlight = player.Character:FindFirstChild("ESPHighlight")
+        if highlight then
+            highlight:Destroy()
+        end
+    end
+end
+
+function toggleESP(state)
+    _G.ESPEnabled = state
+    for _, player in pairs(players:GetPlayers()) do
+        if player ~= localPlayer then
+            if state then
+                createESP(player)
+            else
+                removeESP(player)
+            end
+        end
+    end
+end
+
+players.PlayerAdded:Connect(function(player)
+    if player ~= localPlayer then
+        player.CharacterAdded:Connect(function()
+            if _G.ESPEnabled then
+                createESP(player)
+            end
+        end)
+        player.CharacterRemoving:Connect(function()
+            removeESP(player)
+        end)
+        if _G.ESPEnabled and player.Character then
+            createESP(player)
+        end
+    end
+end)
+
+for _, player in pairs(players:GetPlayers()) do
+    if player ~= localPlayer then
+        player.CharacterAdded:Connect(function()
+            if _G.ESPEnabled then
+                createESP(player)
+            end
+        end)
+        player.CharacterRemoving:Connect(function()
+            removeESP(player)
+        end)
+        if _G.ESPEnabled and player.Character then
+            createESP(player)
+        end
+    end
+end
+
+-- Авто-покупка Greedy
+-- Авто-покупка Greedy
+local playerGui = localPlayer.PlayerGui
+local upgradesFolder = localPlayer:FindFirstChild("Upgrades")
+local autoGreedyEnabled = false
+local autoGreedyThread = nil
+
+local function checkGreedy()
+    if not upgradesFolder then
+        warn("Upgrades folder not found!")
+        return 0
+    end
+    -- Получаем все объекты с именем "Greedy"
+    local greedyCount = 0
+    for _, obj in pairs(upgradesFolder:GetChildren()) do
+        if obj.Name == "Greedy" then
+            local isOwned = (obj:IsA("BoolValue") and obj.Value) or
+                            (obj:IsA("IntValue") and obj.Value == 1) or
+                            (obj:IsA("StringValue") and (obj.Value == "true" or obj.Value == "owned"))
+            if isOwned then
+                greedyCount = greedyCount + 1
+            end
+            print("Found Greedy object:", obj.Name, "Type:", obj.ClassName, "Value:", obj.Value, "Is Owned:", isOwned)
+        end
+    end
+    print("Total Greedy count:", greedyCount)
+    return greedyCount -- Возвращаем количество купленных "Greedy"
+end
+
+local function buyGreedy()
+    local success, buyEvent = pcall(function()
+        return playerGui:WaitForChild("LobbyGUI", 5):WaitForChild("WorkSHOP", 5):WaitForChild("BuyItem", 5)
+    end)
+    if not success or not buyEvent then
+        warn("Failed to find BuyItem RemoteEvent:", buyEvent)
+        return
+    end
+    if not buyEvent:IsA("RemoteEvent") then
+        warn("BuyItem is not a RemoteEvent!")
+        return
+    end
+    if checkGreedy() == 0 then
+        local successArgs, args = pcall(function()
+            local upgradeGreedy = playerGui:WaitForChild("LobbyGUI"):WaitForChild("WorkSHOP"):WaitForChild("Upgrades"):WaitForChild("Greedy")
+            print("Attempting to buy Greedy with args:", upgradeGreedy, 30, "Greedy")
+            return {upgradeGreedy, 30, "Greedy"}
+        end)
+        if successArgs then
+            print("Firing BuyItem RemoteEvent with args:", unpack(args))
+            buyEvent:FireServer(unpack(args))
+            wait(1) -- Даём игре время обработать покупку
+            if checkGreedy() > 0 then
+                print("Greedy successfully purchased!")
+                Rayfield:Notify({
+                    Title = "Авто-покупка",
+                    Content = "Greedy успешно куплен!",
+                    Duration = 3,
+                    Image = "shopping-cart"
+                })
+            else
+                warn("Greedy purchase failed - not detected after purchase attempt!")
+            end
+        else
+            warn("Failed to create arguments for buying Greedy:", args)
+        end
+    else
+        print("Greedy already owned, no purchase needed.")
+        Rayfield:Notify({
+            Title = "Авто-покупка",
+            Content = "Greedy уже куплен!",
+            Duration = 3,
+            Image = "shopping-cart"
+        })
+    end
+end
+
+function autoBuyGreedy()
+    while autoGreedyEnabled do
+        upgradesFolder = localPlayer:FindFirstChild("Upgrades") -- Обновляем upgradesFolder на каждой итерации
+        if upgradesFolder then
+            local currentGreedyCount = checkGreedy()
+            if currentGreedyCount == 0 then
+                print("No Greedy found, attempting to buy...")
+                buyGreedy()
+            else
+                print("Greedy exists, waiting for it to be spent...")
+            end
+        else
+            warn("Upgrades folder not found during autoBuyGreedy loop!")
+        end
+        wait(5)
+    end
+end
+
+-- Интерфейс Rayfield
+local EnvironmentTab = Window:CreateTab("Внешняя среда", "eye")
+local AutofarmTab = Window:CreateTab("Автофарм", "dollar-sign")
+local BetaTab = Window:CreateTab("Бета-функции", "alert-triangle")
+
+-- Вкладка "Внешняя среда"
+EnvironmentTab:CreateToggle({
+    Name = "Валл-хак",
+    CurrentValue = false,
+    Callback = function(value)
+        toggleESP(value)
+    end
+})
+
+EnvironmentTab:CreateButton({
+    Name = "Полное освещение",
+    Callback = function()
+        setFullLighting()
+        Rayfield:Notify({
+            Title = "Успех",
+            Content = "Освещение включено",
+            Duration = 3,
+            Image = "check-circle"
+        })
+    end
+})
+
+-- Вкладка "Автофарм"
+AutofarmTab:CreateToggle({
+	Name = "Авто-покупка Greedy",
+	CurrentValue = false,
+	Callback = function(value)
+			autoGreedyEnabled = value
+			if value then
+					upgradesFolder = localPlayer:FindFirstChild("Upgrades") -- Обновляем перед проверкой
+					local initialGreedyCount = checkGreedy()
+					if initialGreedyCount > 0 then
+							autoGreedyEnabled = false
+							Rayfield:Notify({
+									Title = "Авто-покупка",
+									Content = "Greedy уже куплен! Авто-покупка не запущена.",
+									Duration = 3,
+									Image = "x-circle"
+							})
+							return
+					end
+					if not autoGreedyThread or coroutine.status(autoGreedyThread) == "dead" then
+							autoGreedyThread = coroutine.create(autoBuyGreedy)
+							coroutine.resume(autoGreedyThread)
+					end
+					Rayfield:Notify({
+							Title = "Авто-покупка",
+							Content = "Автоматическая покупка Greedy включена",
+							Duration = 3,
+							Image = "shopping-cart"
+					})
+			else
+					Rayfield:Notify({
+							Title = "Авто-покупка",
+							Content = "Автоматическая покупка Greedy выключена",
+							Duration = 3,
+							Image = "x-circle"
+					})
+			end
+	end
+})
+
+AutofarmTab:CreateButton({
+    Name = "Максимум монет",
+    Callback = function()
+        setMaxCoins()
+        Rayfield:Notify({
+            Title = "Успех",
+            Content = "Монеты установлены",
+            Duration = 3,
+            Image = "coins"
+        })
+    end
+})
+
+local antiAFK = createAntiAFK()
+AutofarmTab:CreateToggle({
+    Name = "Анти-АФК",
+    CurrentValue = false,
+    Callback = function(value)
+        antiAFK(value)
+        Rayfield:Notify({
+            Title = "Анти-АФК",
+            Content = value and "Анти-АФК включен" or "Анти-АФК выключен",
+            Duration = 3,
+            Image = value and "play" or "pause"
+        })
+    end
+})
+
+-- Вкладка "Бета-функции"
+BetaTab:CreateButton({
+    Name = "Макс стамина",
+    Callback = function()
+        setInfiniteStamina()
+        Rayfield:Notify({
+            Title = "Успех",
+            Content = "Стамина установлена",
+            Duration = 3,
+            Image = "zap"
+        })
+    end
+})
+
+-- Уведомление о загрузке скрипта
+Rayfield:Notify({
+    Title = "DXSNDHUB",
+    Content = "Скрипт успешно загружен!",
+    Duration = 5,
+    Image = "rocket"
+})
