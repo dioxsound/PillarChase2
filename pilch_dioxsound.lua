@@ -59,12 +59,12 @@ local function setSoftLighting()
     local lighting = game:GetService("Lighting")
     
     -- Настройки освещения
-    local ambientColor = Color3.fromRGB(150, 150, 150) -- Мягкий свет (не слишком яркий)
-    local outdoorAmbientColor = Color3.fromRGB(180, 180, 180) -- Более яркий свет снаружи
-    local brightness = 2 -- Яркость (меньше = темнее, больше = светлее)
-    local clockTime = 14 -- Время дня (14 часов - день)
-    local fogEnd = 1000 -- Расстояние до конца тумана
-    local globalShadows = false -- Отключение глобальных теней
+    local ambientColor = Color3.fromRGB(150, 150, 150)
+    local outdoorAmbientColor = Color3.fromRGB(180, 180, 180)
+    local brightness = 2
+    local clockTime = 14
+    local fogEnd = 1000
+    local globalShadows = false
 
     -- Применение настроек
     local function applyLighting()
@@ -84,12 +84,8 @@ local function setSoftLighting()
         end
     end)
 
-    -- Первичное применение
     applyLighting()
 end
-
--- Вызов функции для установки мягкого освещения
-setSoftLighting()
 
 -- Установка максимального количества монет
 local function setMaxCoins()
@@ -334,13 +330,12 @@ function autoBuyGreedy()
 end
 
 -- Интерфейс Rayfield
-local EnvironmentTab = Window:CreateTab("Внешняя среда", "eye")
-local AutofarmTab = Window:CreateTab("Автофарм", "dollar-sign")
-local BetaTab = Window:CreateTab("Бета-функции", "alert-triangle")
+local EnvironmentTab = Window:CreateTab("OP Cheats")
+local AutofarmTab = Window:CreateTab("Auto Farm")
 
 -- Вкладка "Внешняя среда"
 EnvironmentTab:CreateToggle({
-    Name = "Валл-хак",
+    Name = "ESP",
     CurrentValue = false,
     Callback = function(value)
         toggleESP(value)
@@ -348,7 +343,7 @@ EnvironmentTab:CreateToggle({
 })
 
 EnvironmentTab:CreateButton({
-    Name = "Полное освещение",
+    Name = "SoftBright",
     Callback = function()
         setSoftLighting()
         Rayfield:Notify({
@@ -360,9 +355,22 @@ EnvironmentTab:CreateButton({
     end
 })
 
+EnvironmentTab:CreateButton({
+    Name = "Infinity Stamina (Killer)",
+    Callback = function()
+        setInfiniteStamina()
+        Rayfield:Notify({
+            Title = "Успех",
+            Content = "Стамина установлена",
+            Duration = 3,
+            Image = "zap"
+        })
+    end
+})
+
 -- Вкладка "Автофарм"
 AutofarmTab:CreateToggle({
-    Name = "Авто-покупка Greedy",
+    Name = "AutoGreedy",
     CurrentValue = false,
     Callback = function(value)
         autoGreedyEnabled = value
@@ -401,7 +409,7 @@ AutofarmTab:CreateToggle({
 })
 
 AutofarmTab:CreateButton({
-    Name = "Максимум монет",
+    Name = "Maximum Coins",
     Callback = function()
         setMaxCoins()
         Rayfield:Notify({
@@ -415,7 +423,7 @@ AutofarmTab:CreateButton({
 
 local antiAFK = createAntiAFK()
 AutofarmTab:CreateToggle({
-    Name = "Анти-АФК",
+    Name = "Anti-Afk",
     CurrentValue = false,
     Callback = function(value)
         antiAFK(value)
@@ -428,19 +436,6 @@ AutofarmTab:CreateToggle({
     end
 })
 
--- Вкладка "Бета-функции"
-BetaTab:CreateButton({
-    Name = "Макс стамина",
-    Callback = function()
-        setInfiniteStamina()
-        Rayfield:Notify({
-            Title = "Успех",
-            Content = "Стамина установлена",
-            Duration = 3,
-            Image = "zap"
-        })
-    end
-})
 
 -- Уведомление о загрузке скрипта
 Rayfield:Notify({
