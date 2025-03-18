@@ -4,110 +4,6 @@ local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
 local LocalPlayer = Players.LocalPlayer
 
--- Создание кастомной заставки
-local SplashScreen = Instance.new("ScreenGui")
-SplashScreen.Name = "DioxsoundSplashScreen"
-SplashScreen.IgnoreGuiInset = true
-SplashScreen.Parent = CoreGui
-
--- Фон
-local Background = Instance.new("Frame")
-Background.Size = UDim2.new(1, 0, 1, 0)
-Background.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Background.BorderSizePixel = 0
-Background.Parent = SplashScreen
-
--- Градиентный фон
-local Gradient = Instance.new("UIGradient")
-Gradient.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 20, 20)),
-                                    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 50))})
-Gradient.Rotation = 45
-Gradient.Parent = Background
-
--- Текст "DXSNDHUB"
-local LogoLabel = Instance.new("TextLabel")
-LogoLabel.Size = UDim2.new(0, 400, 0, 100)
-LogoLabel.Position = UDim2.new(0.5, 0, 0.4, 0)
-LogoLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-LogoLabel.BackgroundTransparency = 1
-LogoLabel.Text = "DXSNDHUB"
-LogoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-LogoLabel.TextSize = 60
-LogoLabel.Font = Enum.Font.GothamBlack
-LogoLabel.TextTransparency = 1
-LogoLabel.Parent = Background
-
--- Подзаголовок "telegram: @DXSNDHUB"
-local SubtitleLabel = Instance.new("TextLabel")
-SubtitleLabel.Size = UDim2.new(0, 400, 0, 50)
-SubtitleLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
-SubtitleLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-SubtitleLabel.BackgroundTransparency = 1
-SubtitleLabel.Text = "telegram: @DXSNDHUB"
-SubtitleLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
-SubtitleLabel.TextSize = 30
-SubtitleLabel.Font = Enum.Font.Gotham
-SubtitleLabel.TextTransparency = 1
-SubtitleLabel.Parent = Background
-
--- Прогресс-бар
-local ProgressBarFrame = Instance.new("Frame")
-ProgressBarFrame.Size = UDim2.new(0, 300, 0, 20)
-ProgressBarFrame.Position = UDim2.new(0.5, 0, 0.6, 0)
-ProgressBarFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-ProgressBarFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-ProgressBarFrame.BorderSizePixel = 0
-ProgressBarFrame.Parent = Background
-
-local ProgressBar = Instance.new("Frame")
-ProgressBar.Size = UDim2.new(0, 0, 1, 0)
-ProgressBar.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
-ProgressBar.BorderSizePixel = 0
-ProgressBar.Parent = ProgressBarFrame
-
--- Анимация появления текста
-local fadeInTween = TweenService:Create(LogoLabel, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-    TextTransparency = 0
-})
-local subtitleFadeInTween = TweenService:Create(SubtitleLabel,
-    TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        TextTransparency = 0
-    })
-fadeInTween:Play()
-wait(0.5)
-subtitleFadeInTween:Play()
-
--- Анимация волны для текста
-local waveTween = TweenService:Create(LogoLabel,
-    TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
-        TextSize = 65
-    })
-waveTween:Play()
-
--- Анимация прогресс-бара
-local progressTween = TweenService:Create(ProgressBar, TweenInfo.new(3, Enum.EasingStyle.Linear), {
-    Size = UDim2.new(1, 0, 1, 0)
-})
-progressTween:Play()
-
--- Ждём завершения анимации
-wait(3)
-
--- Анимация исчезновения
-local fadeOutTween = TweenService:Create(LogoLabel, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-    TextTransparency = 1
-})
-local subtitleFadeOutTween = TweenService:Create(SubtitleLabel,
-    TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-        TextTransparency = 1
-    })
-fadeOutTween:Play()
-subtitleFadeOutTween:Play()
-wait(1)
-
--- Удаляем заставку
-SplashScreen:Destroy()
-
 -- Загрузка Rayfield
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
@@ -158,30 +54,42 @@ local function setInfiniteStamina()
     players.PlayerAdded:Connect(onCharacterAdded)
 end
 
--- Установка полного освещения
-local function setFullLighting()
+-- Установка мягкого освещения
+local function setSoftLighting()
     local lighting = game:GetService("Lighting")
-    local ambientColor = Color3.fromRGB(255, 255, 255)
-    local density, offset, glare, haze = 0.1, 0, 0, 0
-    local atmosphereColor = Color3.fromRGB(255, 255, 255)
+    
+    -- Настройки освещения
+    local ambientColor = Color3.fromRGB(150, 150, 150) -- Мягкий свет (не слишком яркий)
+    local outdoorAmbientColor = Color3.fromRGB(180, 180, 180) -- Более яркий свет снаружи
+    local brightness = 2 -- Яркость (меньше = темнее, больше = светлее)
+    local clockTime = 14 -- Время дня (14 часов - день)
+    local fogEnd = 1000 -- Расстояние до конца тумана
+    local globalShadows = false -- Отключение глобальных теней
+
+    -- Применение настроек
     local function applyLighting()
         lighting.Ambient = ambientColor
-        lighting.Atmosphere.Density = density
-        lighting.Atmosphere.Offset = offset
-        lighting.Atmosphere.Glare = glare
-        lighting.Atmosphere.Haze = haze
-        lighting.Atmosphere.Color = atmosphereColor
+        lighting.OutdoorAmbient = outdoorAmbientColor
+        lighting.Brightness = brightness
+        lighting.ClockTime = clockTime
+        lighting.FogEnd = fogEnd
+        lighting.GlobalShadows = globalShadows
     end
+
+    -- Постоянное применение настроек
     spawn(function()
         while true do
-            if lighting.Ambient ~= ambientColor then
-                applyLighting()
-            end
+            applyLighting() -- Принудительно применяем настройки каждые 0.1 секунды
             wait(0.1)
         end
     end)
+
+    -- Первичное применение
     applyLighting()
 end
+
+-- Вызов функции для установки мягкого освещения
+setSoftLighting()
 
 -- Установка максимального количества монет
 local function setMaxCoins()
@@ -244,11 +152,20 @@ _G.ESPEnabled = false
 local players = game:GetService("Players")
 local localPlayer = players.LocalPlayer
 
+-- Создание подсветки для игрока
 local function createESP(player)
     if not _G.ESPEnabled or player == localPlayer or not player.Character then
         return
     end
-    local highlight = Instance.new("Highlight")
+
+    -- Проверяем, существует ли уже подсветка
+    local highlight = player.Character:FindFirstChild("ESPHighlight")
+    if highlight then
+        return
+    end
+
+    -- Создаем новую подсветку
+    highlight = Instance.new("Highlight")
     highlight.Name = "ESPHighlight"
     highlight.Adornee = player.Character
     highlight.FillColor = Color3.fromRGB(0, 255, 0)
@@ -256,6 +173,7 @@ local function createESP(player)
     highlight.Parent = player.Character
 end
 
+-- Удаление подсветки для игрока
 local function removeESP(player)
     if player.Character then
         local highlight = player.Character:FindFirstChild("ESPHighlight")
@@ -265,6 +183,7 @@ local function removeESP(player)
     end
 end
 
+-- Включение/выключение ESP для всех игроков
 function toggleESP(state)
     _G.ESPEnabled = state
     for _, player in pairs(players:GetPlayers()) do
@@ -278,39 +197,50 @@ function toggleESP(state)
     end
 end
 
+-- Обработка событий для новых игроков
 players.PlayerAdded:Connect(function(player)
     if player ~= localPlayer then
+        -- Когда персонаж появляется
         player.CharacterAdded:Connect(function()
             if _G.ESPEnabled then
                 createESP(player)
             end
         end)
+
+        -- Когда персонаж удаляется
         player.CharacterRemoving:Connect(function()
             removeESP(player)
         end)
+
+        -- Если персонаж уже существует
         if _G.ESPEnabled and player.Character then
             createESP(player)
         end
     end
 end)
 
+-- Обработка событий для текущих игроков
 for _, player in pairs(players:GetPlayers()) do
     if player ~= localPlayer then
+        -- Когда персонаж появляется
         player.CharacterAdded:Connect(function()
             if _G.ESPEnabled then
                 createESP(player)
             end
         end)
+
+        -- Когда персонаж удаляется
         player.CharacterRemoving:Connect(function()
             removeESP(player)
         end)
+
+        -- Если персонаж уже существует
         if _G.ESPEnabled and player.Character then
             createESP(player)
         end
     end
 end
 
--- Авто-покупка Greedy
 -- Авто-покупка Greedy
 local playerGui = localPlayer.PlayerGui
 local upgradesFolder = localPlayer:FindFirstChild("Upgrades")
@@ -420,7 +350,7 @@ EnvironmentTab:CreateToggle({
 EnvironmentTab:CreateButton({
     Name = "Полное освещение",
     Callback = function()
-        setFullLighting()
+        setSoftLighting()
         Rayfield:Notify({
             Title = "Успех",
             Content = "Освещение включено",
